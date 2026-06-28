@@ -45,6 +45,7 @@ def generate_irk_plan(topic, extra_context, api_key, model_name, language_mode):
         1. JANGAN gunakan rumi tulisan biasa, abjad inggeris atau tanda asteris (**) sama sekali dalam kandungan.
         2. Gunakan nombor Jawi/Arab sah seperti (١, ٢, ٣, ٤, ٥...) untuk semua jenis senarai. JANGAN GUNA (1, 2, 3...).
         3. Setiap tajuk bahagian WAJIB dimulakan dengan perkataan "بهاڬين: " diikuti nama bahagian tersebut dalam Jawi.
+        4. JANGAN guna perkataan MURID, digantikan dengan perkataan PELAJAR menyeluruh di dalam teks.
         
         Strukturkan output tepat mengikut penanda berikut:
         
@@ -84,7 +85,7 @@ def generate_irk_plan(topic, extra_context, api_key, model_name, language_mode):
         # Standard Rumi Prompt
         prompt = f"""
         Topik/Tajuk: {topic}. Sukatan Pelajaran: IRK Brunei 2047. Konteks Tambahan: {extra_context}.
-        Sila hasilkan RPH lengkap dalam Bahasa Melayu Rumi standard.
+        Sila hasilkan RMH lengkap dalam Bahasa Melayu Rumi standard.
         Gunakan penanda siri "SECTION: " diikuti nama bahagian dalam huruf besar. Gunakan angka biasa (1, 2, 3).
         
         SECTION: TOPIK DAN KOD SUKATAN
@@ -167,7 +168,7 @@ def create_word_export(topic, text, is_jawi=False):
         labels = [
             ["TARIKH:", "HARI:"],
             ["TEMPAT / BILIK:", "MINGGU NO:"],
-            ["BILANGAN MURID:", "TEMPOH (MINIT):"]
+            ["BILANGAN PELAJAR:", "TEMPOH (MINIT):"]
         ]
         
     for r in range(3):
@@ -280,16 +281,16 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
     
     with col1:
         st.markdown("### 📝 Versi Rumi (Bahasa Melayu)")
-        st.text_area("PREVIEW RUMI", st.session_state['irk_malay_out'], height=400)
+        st.text_area("PREVIEW TULISAN RUMI", st.session_state['irk_malay_out'], height=400)
         
         malay_doc = create_word_export(u_topic, st.session_state['irk_malay_out'], is_jawi=False)
         st.download_button(
             label="📥 DOWNLOAD WORD: VERSI RUMI (.DOCX)",
-            data=malay_doc, file_name=f"RPH_IRK_RUMI.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            data=malay_doc, file_name=f"RMH_IRK_RUMI.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
         
     with col2:
-        st.markdown("### 🕌 Versi Tulisan Jawi")
+        st.markdown("### 🕌 Versi TULISAN JAWI")
         st.markdown(
             f'<textarea style="width:100%; height:400px; direction:rtl; text-align:right; font-family:\'Traditional Arabic\', sans-serif; font-size:18px;" readonly>{st.session_state["irk_jawi_out"]}</textarea>', 
             unsafe_allow_html=True
@@ -298,5 +299,5 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
         jawi_doc = create_word_export(u_topic, st.session_state['irk_jawi_out'], is_jawi=True)
         st.download_button(
             label="📥 DOWNLOAD WORD: VERSI  JAWI (.DOCX)",
-            data=jawi_doc, file_name=f"RPH_IRK_JAWI.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            data=jawi_doc, file_name=f"RMH_IRK_JAWI.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )

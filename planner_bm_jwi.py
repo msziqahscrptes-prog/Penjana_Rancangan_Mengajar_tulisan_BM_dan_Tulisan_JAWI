@@ -9,7 +9,7 @@ from io import BytesIO
 
 # --- 1. CONFIGURATION & CORE SETTINGS ---
 st.set_page_config(page_title="Penjana RMH IRK Brunei (2047)", layout="wide")
-st.title("🕌 RANCANGAN MENGAJAR HARIAN (RMH) PUI/IRK 2047")
+st.title("🕌 RANCANGAN MENGAJAR HARIAN PUI/IRK 2047")
 
 user_api_key = st.text_input("🔑 MASUKKAN KUNCI API GEMINI ANDA:", type="password")
 

@@ -289,10 +289,10 @@ def create_word_export(topic, text, is_jawi=False):
 
 # --- 4. STREAMLIT INTERFACE ---
 st.write("---")
-u_topic = st.text_input("TOPIK / TAJUK PELAJARAN IRK:", value="Kesan Syirik Dalam Kehidupan")
+u_topic = st.text_input("TOPIK / TAJUK PELAJARAN IRK:", value="Rukun Sembahyang Lima Waktu")
 u_extra = st.text_area("KONTEKS TAMBAHAN / NOTA KHUSUS (PILIHAN):")
 
-if st.button("🚀 JANA DWU-VERSI RMH (MALAY & JAWI)", type="primary"):
+if st.button("🚀 KLIK JANA DUA VERSI Rancangan Mengajar (RUMI & JAWI)", type="primary"):
     if not user_api_key:
         st.error("❌ SILA MASUKKAN KUNCI API GEMINI ANDA DI BAHAGIAN ATAS.")
     elif not u_topic:
@@ -310,19 +310,19 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
     formatted_filename = u_topic.strip().replace(' ', '_')
     
     with col1:
-        st.markdown("### 📝 Versi Rumi (Bahasa Melayu)")
+        st.markdown("### 📝 Versi RMH BM")
         st.text_area("PREVIEW TULISAN RUMI", st.session_state['irk_malay_out'], height=400)
         
         malay_doc = create_word_export(u_topic, st.session_state['irk_malay_out'], is_jawi=False)
         st.download_button(
-            label="📥 DOWNLOAD WORD: VERSI RUMI (.DOCX)",
+            label="📥 DOWNLOAD WORD: Rancangan Mengajar Harian RUMI (.DOCX)",
             data=malay_doc, 
             file_name=f"RMH_IRK_RUMI_{formatted_filename}.docx", 
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
         
     with col2:
-        st.markdown("### 🕌 Versi TULISAN JAWI")
+        st.markdown("### 🕌 Versi RMH JAWI")
         st.markdown(
             f'<textarea style="width:100%; height:400px; direction:rtl; text-align:right; font-family:\'Traditional Arabic\', sans-serif; font-size:18px;" readonly>{st.session_state["irk_jawi_out"]}</textarea>', 
             unsafe_allow_html=True
@@ -330,7 +330,7 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
         
         jawi_doc = create_word_export(u_topic, st.session_state['irk_jawi_out'], is_jawi=True)
         st.download_button(
-            label="📥 DOWNLOAD WORD: VERSI JAWI (.DOCX)",
+            label="📥 DOWNLOAD WORD: Rancangan Mengajar Harian JAWI (.DOCX)",
             data=jawi_doc, 
             file_name=f"RMH_IRK_JAWI_{formatted_filename}.docx", 
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"

@@ -323,7 +323,8 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
         
     with col2:
         st.markdown("### 🕌 Versi RMH JAWI")
-        print("")
+        st.markdown("")
+        
         st.markdown(
             f'<textarea style="width:100%; height:400px; direction:rtl; text-align:right; font-family:\'Traditional Arabic\', sans-serif; font-size:18px;" readonly>{st.session_state["irk_jawi_out"]}</textarea>', 
             unsafe_allow_html=True

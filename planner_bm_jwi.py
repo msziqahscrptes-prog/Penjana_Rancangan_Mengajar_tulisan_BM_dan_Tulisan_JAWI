@@ -42,14 +42,15 @@ def generate_irk_plan(topic, extra_context, api_key, model_name, language_mode):
         Sila hasilkan Rancangan Mengajar Harian (RMH) yang lengkap dan profesional dalam TULISAN JAWI sepenuhnya.
         
         PERATURAN FORMAT KRITIKAL:
-        1. JANGAN gunakan rumi tulisan biasa, abjad inggeris atau tanda asteris (**) sama sekali dalam kandungan.
-        2. Gunakan nombor Jawi/Arab sah seperti (١, ٢, ٣, ٤, ٥...) untuk semua jenis senarai. JANGAN GUNA (1, 2, 3...).
-        3. Setiap tajuk bahagian WAJIB dimulakan dengan perkataan "بهاڬين: " diikuti nama bahagian tersebut dalam Jawi.
-        4. JANGAN guna perkataan MURID, digantikan dengan perkataan PELAJAR menyeluruh di dalam teks.
+        1. JANGAN gunakan rumi tulisan biasa, abjad inggeris (seperti perkataan 'minit') atau tanda asteris (**) sama sekali dalam kandungan. 
+        2. Sila gunakan ejaan Jawi 'مينيت' untuk menyatakan tempoh masa. Contoh: (١٠ مينيت) atau (٥ مينيت).
+        3. Gunakan nombor Jawi/Arab sah seperti (١, ٢, ٣, ٤, ٥...) untuk semua jenis senarai. JANGAN GUNA (1, 2, 3...).
+        4. Setiap tajuk bahagian WAJIB dimulakan dengan perkataan "بهاڬين: " diikuti nama bahagian tersebut dalam Jawi.
+        5. JANGAN guna perkataan MURID, digantikan dengan perkataan PELAJAR menyeluruh di dalam teks.
         
         Strukturkan output tepat mengikut penanda berikut:
         
-        بهاڬين: توڤيک دان كود سوكتن
+        بهاڬين: توڤيک دان كود سوكتen
         {topic} (IRK BRUNEI 2047)
         
         بهاڬين: اوبجيكتيف ڤمبلاجرن
@@ -85,7 +86,7 @@ def generate_irk_plan(topic, extra_context, api_key, model_name, language_mode):
         # Standard Rumi Prompt
         prompt = f"""
         Topik/Tajuk: {topic}. Sukatan Pelajaran: IRK Brunei 2047. Konteks Tambahan: {extra_context}.
-        Sila hasilkan RMH lengkap dalam Bahasa Melayu Rumi standard.
+        Sila hasilkan RMH lengkap dalam Bahasa Melayu Rumi standard. Pastikan menggunakan istilah PELAJAR (bukan MURID).
         Gunakan penanda siri "SECTION: " diikuti nama bahagian dalam huruf besar. Gunakan angka biasa (1, 2, 3).
         
         SECTION: TOPIK DAN KOD SUKATAN
@@ -133,12 +134,12 @@ def create_word_export(topic, text, is_jawi=False):
     for m in ['top_margin', 'bottom_margin', 'left_margin', 'right_margin']:
         setattr(section_geo, m, Inches(0.4))
     
-    # Running Header & Page Number Allocation
+    # Clean Running Header (Only standard digits, centered layout)
     header_p = section_geo.header.paragraphs[0]
-    header_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT if is_jawi else WD_ALIGN_PARAGRAPH.LEFT
-    header_run = header_p.add_run("صـفـحـة " if is_jawi else "Muka Surat ")
+    header_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    header_run = header_p.add_run()
     add_page_number(header_run)
-    header_run.font.name = 'Traditional Arabic' if is_jawi else 'Arial'
+    header_run.font.name = 'Arial'
     header_run.font.size = Pt(11)
 
     # Styles Config
@@ -151,7 +152,7 @@ def create_word_export(topic, text, is_jawi=False):
     # Title Banner
     title_p = doc.add_paragraph()
     title_p.alignment = WD_ALIGN_PARAGRAPH.RIGHT if is_jawi else WD_ALIGN_PARAGRAPH.LEFT
-    title_text = f"رانچڠن ڤڠاجرن هارين: {topic}" if is_jawi else f"RANCANGAN PENGAJARAN HARIAN: {topic.upper()}"
+    title_text = f"رانچڠن مڠاجر هارين: {topic}" if is_jawi else f"RANCANGAN MENGAJAR HARIAN: {topic.upper()}"
     title_p.add_run(title_text).bold = True
 
     # Admin Grid Translation Logic
@@ -160,9 +161,9 @@ def create_word_export(topic, text, is_jawi=False):
     
     if is_jawi:
         labels = [
-            [" :ماريق/تاريخر", " :هاري"],
+            [" :تاريق", " :هاري"],
             [" :تمڤت / بيليک", " :ميڠڬو نو"],
-            [" :بيلڠن موريـد", " :تيمڤوه (مينيت)"]
+            [" :بيلڠن ڤلاجر", " :تيمڤوه (مينيت)"]
         ]
     else:
         labels = [
@@ -199,11 +200,9 @@ def create_word_export(topic, text, is_jawi=False):
 
         # Special Rendering: Keyword Grid Formatting (3 columns x 2 rows)
         if ("اصطلاح" in title or "KEYWORD" in title):
-            # Parse commas to separate the keywords cleanly
             delimit_char = '،' if is_jawi else ','
             keywords = [k.strip() for k in body_content.split(delimit_char) if k.strip()]
             
-            # Pad array up to exactly 6 items to avoid indexing overflow crashes
             while len(keywords) < 6:
                 keywords.append("-" if is_jawi else "-")
                 
@@ -229,17 +228,17 @@ def create_word_export(topic, text, is_jawi=False):
         cell_p.add_run(body_content if body_content else "...")
         doc.add_paragraph()
 
-    # Fully Jawi / Translated Evaluation Footer Block
+    # Dynamic Evaluation Footer Block (HOD -> KETUA JABATAN)
     doc.add_page_break()
     p_hod = doc.add_paragraph()
     p_hod.alignment = WD_ALIGN_PARAGRAPH.RIGHT if is_jawi else WD_ALIGN_PARAGRAPH.LEFT
-    p_hod.add_run("ڤڠسهن دان اولاسن ڤڠتوا / كتوا جابتن (HOD)" if is_jawi else "PENGESAHAN DAN ULASAN PENGETUA / KETUA JABATAN (HOD)").bold = True
+    p_hod.add_run("ڤڠسهن دان اولاسن ڤڠتوا / كتوا جابتن" if is_jawi else "PENGESAHAN DAN ULASAN PENGETUA / KETUA JABATAN").bold = True
     
     hod_table = doc.add_table(rows=3, cols=2)
     hod_table.style = 'Table Grid'
     
     if is_jawi:
-        hod_table.cell(0, 0).paragraphs[0].add_run(" :اولاسن / ريمارک").bold = True
+        hod_table.cell(0, 0).paragraphs[0].add_run(" :اولاسن").bold = True
         hod_table.cell(0, 1).paragraphs[0].add_run(" :تنداتاڠن دان چوڤ جابتن").bold = True
         hod_table.rows[1].height = Pt(55)
         hod_table.cell(2, 0).paragraphs[0].add_run(" :تاريق سيمقن").bold = True
@@ -253,6 +252,12 @@ def create_word_export(topic, text, is_jawi=False):
         hod_table.cell(2, 0).paragraphs[0].add_run("TARIKH SEMAKAN:").bold = True
         hod_table.cell(2, 1).paragraphs[0].add_run("NAMA PENYEMAK:").bold = True
 
+    # Adjust spacing parameter cells smoothly
+    for row in admin_table.rows:
+        for cell in row.cells: cell.paragraphs[0].paragraph_format.line_spacing = 1.0
+    for row in hod_table.rows:
+        for cell in row.cells: cell.paragraphs[0].paragraph_format.line_spacing = 1.0
+
     bio = BytesIO()
     doc.save(bio)
     bio.seek(0)
@@ -264,7 +269,7 @@ st.write("---")
 u_topic = st.text_input("TOPIK / TAJUK PELAJARAN IRK:", value="Kesan Syirik Dalam Kehidupan")
 u_extra = st.text_area("KONTEKS TAMBAHAN / NOTA KHUSUS (PILIHAN):")
 
-if st.button("🚀 JANA DWU-VERSI RPH (MALAY & JAWI)", type="primary"):
+if st.button("🚀 JANA DWU-VERSI RMH (MALAY & JAWI)", type="primary"):
     if not user_api_key:
         st.error("❌ SILA MASUKKAN KUNCI API GEMINI ANDA DI BAHAGIAN ATAS.")
     elif not u_topic:
@@ -279,6 +284,9 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
     st.divider()
     col1, col2 = st.columns(2)
     
+    # File naming variable treatment
+    formatted_filename = u_topic.strip().replace(' ', '_')
+    
     with col1:
         st.markdown("### 📝 Versi Rumi (Bahasa Melayu)")
         st.text_area("PREVIEW TULISAN RUMI", st.session_state['irk_malay_out'], height=400)
@@ -286,7 +294,9 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
         malay_doc = create_word_export(u_topic, st.session_state['irk_malay_out'], is_jawi=False)
         st.download_button(
             label="📥 DOWNLOAD WORD: VERSI RUMI (.DOCX)",
-            data=malay_doc, file_name=f"RMH_IRK_RUMI.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            data=malay_doc, 
+            file_name=f"RMH_IRK_RUMI_{formatted_filename}.docx", 
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
         
     with col2:
@@ -298,6 +308,8 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
         
         jawi_doc = create_word_export(u_topic, st.session_state['irk_jawi_out'], is_jawi=True)
         st.download_button(
-            label="📥 DOWNLOAD WORD: VERSI  JAWI (.DOCX)",
-            data=jawi_doc, file_name=f"RMH_IRK_JAWI.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            label="📥 DOWNLOAD WORD: VERSI JAWI (.DOCX)",
+            data=jawi_doc, 
+            file_name=f"RMH_IRK_JAWI_{formatted_filename}.docx", 
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )

@@ -311,7 +311,7 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
     
     with col1:
         st.markdown("### 📝 Versi RMH BM")
-        #st.text_area("PREVIEW TULISAN RUMI", st.session_state['irk_malay_out'], height=400)
+        st.text_area("PREVIEW TULISAN RUMI", st.session_state['irk_malay_out'], height=400)
         
         malay_doc = create_word_export(u_topic, st.session_state['irk_malay_out'], is_jawi=False)
         st.download_button(
@@ -323,7 +323,7 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
         
     with col2:
         st.markdown("### 🕌 Versi RMH JAWI")
-        #st.text_area("PREVIEW TULISAN JAWI", st.session_state['irk_malay_out'], height=400)
+        print("")
         st.markdown(
             f'<textarea style="width:100%; height:400px; direction:rtl; text-align:right; font-family:\'Traditional Arabic\', sans-serif; font-size:18px;" readonly>{st.session_state["irk_jawi_out"]}</textarea>', 
             unsafe_allow_html=True

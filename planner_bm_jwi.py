@@ -50,7 +50,7 @@ def generate_irk_plan(topic, extra_context, api_key, model_name, language_mode):
         
         Strukturkan output tepat mengikut penanda berikut:
         
-        بهاڬين: توڤيک دان كود سوكتen
+        بهاڬين: توڤيک دان كود سوكتن
         {topic} (IRK BRUNEI 2047)
         
         بهاڬين: اوبجيكتيف ڤمبلاجرن
@@ -134,7 +134,7 @@ def create_word_export(topic, text, is_jawi=False):
     for m in ['top_margin', 'bottom_margin', 'left_margin', 'right_margin']:
         setattr(section_geo, m, Inches(0.4))
     
-    # Clean Running Header (Only standard digits, centered layout)
+    # Clean Running Header (Only standard digits centered)
     header_p = section_geo.header.paragraphs[0]
     header_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     header_run = header_p.add_run()
@@ -155,29 +155,46 @@ def create_word_export(topic, text, is_jawi=False):
     title_text = f"رانچڠن مڠاجر هارين: {topic}" if is_jawi else f"RANCANGAN MENGAJAR HARIAN: {topic.upper()}"
     title_p.add_run(title_text).bold = True
 
-    # Admin Grid Translation Logic
+    # Administrative Table Grid Setup
     admin_table = doc.add_table(rows=3, cols=4)
     admin_table.style = 'Table Grid'
     
     if is_jawi:
-        labels = [
-            [" :تاريق", " :هاري"],
-            [" :تمڤت / بيليک", " :ميڠڬو نو"],
-            [" :بيلڠن ڤلاجر", " :تيمڤوه (مينيت)"]
+        # RTL Mirrored Setup: Labels are placed in columns 1 and 3 (0-indexed base)
+        jawi_labels = [
+            ["تاريق:", "هاري:"],
+            ["تمڤت / بيليک:", "ميڠڬو نو:"],
+            ["بيلڠن ڤلاجر:", "تيمڤوه (مينيت):"]
         ]
+        for r in range(3):
+            # Label 1 goes to Column 1 (index 1), Blank field to Column 0
+            cell_a = admin_table.cell(r, 1)
+            p_a = cell_a.paragraphs[0]
+            p_a.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            p_a.add_run(jawi_labels[r][0]).bold = True
+            
+            # Label 2 goes to Column 3 (index 3), Blank field to Column 2
+            cell_b = admin_table.cell(r, 3)
+            p_b = cell_b.paragraphs[0]
+            p_b.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            p_b.add_run(jawi_labels[r][1]).bold = True
     else:
-        labels = [
+        # LTR Standard Setup: Labels on columns 0 and 2
+        rumi_labels = [
             ["TARIKH:", "HARI:"],
             ["TEMPAT / BILIK:", "MINGGU NO:"],
             ["BILANGAN PELAJAR:", "TEMPOH (MINIT):"]
         ]
-        
-    for r in range(3):
-        for c_idx, label in zip([0, 2], labels[r]):
-            cell = admin_table.cell(r, c_idx)
-            p = cell.paragraphs[0]
-            p.alignment = WD_ALIGN_PARAGRAPH.RIGHT if is_jawi else WD_ALIGN_PARAGRAPH.LEFT
-            p.add_run(label).bold = True
+        for r in range(3):
+            cell_a = admin_table.cell(r, 0)
+            p_a = cell_a.paragraphs[0]
+            p_a.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            p_a.add_run(rumi_labels[r][0]).bold = True
+            
+            cell_b = admin_table.cell(r, 2)
+            p_b = cell_b.paragraphs[0]
+            p_b.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            p_b.add_run(rumi_labels[r][1]).bold = True
 
     doc.add_paragraph()
 
@@ -228,7 +245,7 @@ def create_word_export(topic, text, is_jawi=False):
         cell_p.add_run(body_content if body_content else "...")
         doc.add_paragraph()
 
-    # Dynamic Evaluation Footer Block (HOD -> KETUA JABATAN)
+    # Dynamic Evaluation Footer Block
     doc.add_page_break()
     p_hod = doc.add_paragraph()
     p_hod.alignment = WD_ALIGN_PARAGRAPH.RIGHT if is_jawi else WD_ALIGN_PARAGRAPH.LEFT
@@ -241,7 +258,7 @@ def create_word_export(topic, text, is_jawi=False):
         hod_table.cell(0, 0).paragraphs[0].add_run(" :اولاسن").bold = True
         hod_table.cell(0, 1).paragraphs[0].add_run(" :تنداتاڠن دان چوڤ جابتن").bold = True
         hod_table.rows[1].height = Pt(55)
-        hod_table.cell(2, 0).paragraphs[0].add_run(" :تاريق سيمقن").bold = True
+        hod_table.cell(2, 0).paragraphs[0].add_run(" :تاريق sيمقن").bold = True
         hod_table.cell(2, 1).paragraphs[0].add_run(" :نام ڤڽيمق").bold = True
         for row in hod_table.rows:
             for cell in row.cells: cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -252,7 +269,7 @@ def create_word_export(topic, text, is_jawi=False):
         hod_table.cell(2, 0).paragraphs[0].add_run("TARIKH SEMAKAN:").bold = True
         hod_table.cell(2, 1).paragraphs[0].add_run("NAMA PENYEMAK:").bold = True
 
-    # Adjust spacing parameter cells smoothly
+    # Adjust table padding layout properties
     for row in admin_table.rows:
         for cell in row.cells: cell.paragraphs[0].paragraph_format.line_spacing = 1.0
     for row in hod_table.rows:
@@ -284,7 +301,6 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
     st.divider()
     col1, col2 = st.columns(2)
     
-    # File naming variable treatment
     formatted_filename = u_topic.strip().replace(' ', '_')
     
     with col1:

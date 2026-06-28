@@ -338,7 +338,14 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
 
-# --- UI FOOTNOTE BLOCKS ---
+# --- UI FOOTNOTE BLOCKS (CENTERED) ---
 st.markdown("---")
-st.caption("Pencipta portal: Hjh Nurul Haziqah Hj Nordin | © 2026 BScHM Computer Science Strathclyde Uni.")
-st.caption("Penjana Rancangan Mengajar Harian ini adalah untuk kegunaan Pegawai Pendidikan Brunei sahaja")
+st.markdown(
+    """
+    <div style="text-align: center; color: #808495; font-size: 0.85rem;">
+        Pencipta: Hjh Nurul Haziqah Hj Nordin | &copy; © 2026 BScHM Computer Science Strathclyde University
+        Portal Penjana Rancangan Mengajar Harian ini untuk kegunaan Pegawai Pendidikan Brunei Darussalam sahaja.
+    </div>
+    """,
+    unsafe_allow_html=True
+)

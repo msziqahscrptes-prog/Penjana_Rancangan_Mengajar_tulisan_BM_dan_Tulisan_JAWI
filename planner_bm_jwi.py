@@ -9,7 +9,7 @@ from io import BytesIO
 
 # --- 1. CONFIGURATION & CORE SETTINGS ---
 st.set_page_config(page_title="Penjana RPH IRK Brunei (2047)", layout="wide")
-st.title("🕌 PENJANA RANCANGAN PENGAJARAN HARIAN (RPH) IRK BRUNEI [2047]")
+st.title("🕌 PENJANA RANCANGAN MENGAJAR HARIAN (RMH) PUI BRUNEI [2047]")
 
 user_api_key = st.text_input("🔑 MASUKKAN KUNCI API GEMINI ANDA:", type="password")
 
@@ -39,7 +39,7 @@ def generate_irk_plan(topic, extra_context, api_key, model_name, language_mode):
         Sukatan Pelajaran: IRK Brunei Syllabus Code 2047 (Cambridge GCE O Level).
         Konteks Tambahan: {extra_context}.
         
-        Sila hasilkan Rancangan Pengajaran Harian (RPH) yang lengkap dan profesional dalam TULISAN JAWI sepenuhnya.
+        Sila hasilkan Rancangan Mengajar Harian (RMH) yang lengkap dan profesional dalam TULISAN JAWI sepenuhnya.
         
         PERATURAN FORMAT KRITIKAL:
         1. JANGAN gunakan rumi tulisan biasa, abjad inggeris atau tanda asteris (**) sama sekali dalam kandungan.

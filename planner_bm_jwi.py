@@ -339,6 +339,6 @@ if 'irk_malay_out' in st.session_state and 'irk_jawi_out' in st.session_state:
         )
 
 # --- UI FOOTNOTE BLOCKS ---
-    st.markdown("---")
-    st.caption("Pencipta portal: Hjh Nurul Haziqah Hj Nordin | © 2026 BScHM Computer Science Strathclyde Uni.")
-    st.caption("Penjana Rancangan Mengajar Harian ini adalah untuk kegunaan Pegawai Pendidikan Brunei sahaja")
+st.markdown("---")
+st.caption("Pencipta portal: Hjh Nurul Haziqah Hj Nordin | © 2026 BScHM Computer Science Strathclyde Uni.")
+st.caption("Penjana Rancangan Mengajar Harian ini adalah untuk kegunaan Pegawai Pendidikan Brunei sahaja")

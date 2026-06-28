@@ -343,7 +343,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style="text-align: center; color: #808495; font-size: 0.85rem;">
-        Portal Penjana Rancangan Mengajar Harian ini untuk kegunaan Pegawai Pendidikan Brunei Darussalam sahaja.
+        Portal Penjana Rancangan Mengajar Harian ini khas untuk Pegawai Pendidikan Brunei Darussalam sahaja.
     </div>
     <div style="text-align: center; color: #808495; font-size: 0.85rem;">
         Pencipta: Hjh Nurul Haziqah Hj Nordin © 2026 BScHM Computer Science Strathclyde University
